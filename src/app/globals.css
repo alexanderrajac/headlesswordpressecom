@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --wood: #8B5E3C;
+  --wood-light: #c8803c;
+  --wood-dark: #6b4428;
+  --cream: #F5F1E8;
+  --cream-dark: #ede5d0;
+  --charcoal: #2F2F2F;
+  --charcoal-light: #4a4a4a;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--cream);
+    color: var(--charcoal);
+  }
+
+  ::selection {
+    background-color: var(--wood);
+    color: var(--cream);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--cream-dark);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--wood);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--wood-dark);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-wood-600 text-cream-100 px-6 py-3 rounded-lg font-body font-semibold 
+           transition-all duration-200 hover:bg-wood-700 active:scale-95
+           focus:outline-none focus:ring-2 focus:ring-wood-600 focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-wood-600 text-wood-600 px-6 py-3 rounded-lg font-body font-semibold 
+           transition-all duration-200 hover:bg-wood-600 hover:text-cream-100 active:scale-95
+           focus:outline-none focus:ring-2 focus:ring-wood-600 focus:ring-offset-2;
+  }
+
+  .btn-ghost {
+    @apply text-charcoal px-4 py-2 rounded-lg font-body 
+           transition-all duration-200 hover:bg-cream-200 active:scale-95;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-card transition-all duration-300 hover:shadow-card-hover;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 rounded-lg border border-cream-300 bg-white
+           font-body text-charcoal placeholder-charcoal/40
+           focus:outline-none focus:ring-2 focus:ring-wood-600 focus:border-transparent
+           transition-all duration-200;
+  }
+
+  .section-title {
+    @apply font-display text-3xl md:text-4xl font-bold text-charcoal;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .skeleton {
+    @apply bg-gradient-to-r from-cream-200 via-cream-100 to-cream-200
+           animate-shimmer bg-[length:200%_100%];
+  }
+}
+
+@layer utilities {
+  .text-wood { color: var(--wood); }
+  .bg-wood { background-color: var(--wood); }
+  .border-wood { border-color: var(--wood); }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Product image zoom */
+.product-gallery img {
+  transition: transform 0.4s ease;
+}
+
+.product-gallery img:hover {
+  transform: scale(1.05);
+}
+
+/* Toast override */
+.react-hot-toast {
+  font-family: var(--font-body) !important;
+}
+
+/* Drawer backdrop */
+.drawer-backdrop {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Star rating */
+.star-rating {
+  color: #f59e0b;
+}
+
+/* Price tag */
+.price-tag {
+  font-variant-numeric: tabular-nums;
+}

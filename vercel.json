@@ -1,0 +1,14 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next",
+  "env": {
+    "NEXT_PUBLIC_WP_URL": "@wp_url",
+    "WC_KEY": "@wc_key",
+    "WC_SECRET": "@wc_secret",
+    "NEXT_PUBLIC_UPI_ID": "@upi_id",
+    "NEXT_PUBLIC_UPI_NAME": "@upi_name"
+  }
+}

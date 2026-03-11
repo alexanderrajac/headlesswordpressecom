@@ -31,7 +31,7 @@ export default async function ProductPage({ params }: Props) {
     notFound();
   }
 
-  let related = [];
+  let related: any[] = [];
   try {
     related = await getRelatedProducts(product.related_ids || []);
   } catch {}

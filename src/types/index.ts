@@ -55,7 +55,7 @@ export interface WCAttribute {
 }
 
 export interface WCMetaData {
-  id: number;
+  id?: number;
   key: string;
   value: string;
 }

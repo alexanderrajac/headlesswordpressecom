@@ -8,7 +8,9 @@ import type { WCProduct } from "@/types";
 import ProductCard from "@/components/product/ProductCard";
 import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
 
-export default function SearchPage() {
+import { Suspense } from "react";
+
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
   const [products, setProducts] = useState<WCProduct[]>([]);
@@ -64,5 +66,17 @@ export default function SearchPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-charcoal/50">
+        Loading...
+      </div>
+    }>
+      <SearchPageContent />
+    </Suspense>
   );
 }

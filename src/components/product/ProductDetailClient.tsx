@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 import {
   ShoppingCart, Heart, Share2, Star, ChevronLeft, ChevronRight,
   Shield, Truck, RefreshCw, Check, ZoomIn, Minus, Plus
@@ -20,8 +22,6 @@ export default function ProductDetailClient({ product }: Props) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [reviews, setReviews] = useState<WCReview[]>([]);
-  const [isZoomed, setIsZoomed] = useState(false);
-  const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 });
   const [activeTab, setActiveTab] = useState<"description" | "reviews" | "shipping">("description");
   const [isSticky, setIsSticky] = useState(false);
   const stickyRef = useRef<HTMLDivElement>(null);
@@ -48,14 +48,6 @@ export default function ProductDetailClient({ product }: Props) {
     if (isOutOfStock) return;
     for (let i = 0; i < quantity; i++) addItem(product);
     toast.success("Added to cart!");
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isZoomed) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setZoomPos({ x, y });
   };
 
   return (
@@ -85,26 +77,19 @@ export default function ProductDetailClient({ product }: Props) {
           {/* Gallery */}
           <div className="space-y-4 product-gallery">
             {/* Main image */}
-            <div
-              className="relative aspect-square rounded-2xl overflow-hidden bg-cream-100 cursor-crosshair"
-              onMouseEnter={() => setIsZoomed(true)}
-              onMouseLeave={() => setIsZoomed(false)}
-              onMouseMove={handleMouseMove}
-            >
+            <div className="relative aspect-square rounded-2xl overflow-hidden bg-cream-100 cursor-zoom-in">
               {product.images[selectedImage] ? (
-                <Image
-                  src={product.images[selectedImage].src}
-                  alt={product.images[selectedImage].alt || product.name}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
-                  priority
-                  style={
-                    isZoomed
-                      ? { transform: "scale(2)", transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` }
-                      : {}
-                  }
-                />
+                <Zoom>
+                  <Image
+                    src={product.images[selectedImage].src}
+                    alt={product.images[selectedImage].alt || product.name}
+                    width={1000}
+                    height={1000}
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover w-full h-full"
+                    priority
+                  />
+                </Zoom>
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-8xl">🪵</div>
               )}

@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartItem, WCProduct } from "@/types";
-import { formatPrice } from "@/lib/woocommerce";
+import { formatPrice } from "@/lib/price";
 
 interface CartStore {
   items: CartItem[];

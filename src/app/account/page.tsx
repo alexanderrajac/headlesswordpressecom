@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Mail, Lock, Phone, ArrowRight, Loader2, LogIn, UserPlus, Eye, EyeOff } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
-import { registerCustomer, findCustomerByEmail } from "@/lib/auth";
 import toast from "react-hot-toast";
 
 export default function AccountPage() {
@@ -59,7 +58,9 @@ export default function AccountPage() {
     if (!validateLogin()) return;
     setLoading(true);
     try {
-      const customer = await findCustomerByEmail(loginForm.email);
+      const res = await fetch(`/api/account/find?email=${encodeURIComponent(loginForm.email)}`);
+      if (!res.ok) throw new Error("Login failed");
+      const customer = await res.json();
       if (!customer) {
         toast.error("No account found with this email. Please register.");
         setLoading(false);
@@ -86,14 +87,23 @@ export default function AccountPage() {
     if (!validateRegister()) return;
     setLoading(true);
     try {
-      const customer = await registerCustomer({
+      const res = await fetch("/api/account/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
         email: regForm.email,
         first_name: regForm.first_name,
         last_name: regForm.last_name,
         username: regForm.username,
         password: regForm.password,
         phone: regForm.phone,
+        }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw { response: { data } };
+      }
+      const customer = await res.json();
       login({
         id: customer.id,
         email: customer.email,

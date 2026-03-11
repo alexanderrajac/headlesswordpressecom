@@ -4,9 +4,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Search, X, Clock, TrendingUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { searchProducts } from "@/lib/woocommerce";
 import type { WCProduct } from "@/types";
-import { formatPrice } from "@/lib/woocommerce";
+import { formatPrice } from "@/lib/price";
 
 interface Props {
   onClose?: () => void;
@@ -47,7 +46,9 @@ export default function SearchAutocomplete({ onClose }: Props) {
     }
     setIsLoading(true);
     try {
-      const data = await searchProducts(q);
+      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+      if (!res.ok) throw new Error("Search failed");
+      const data = (await res.json()) as WCProduct[];
       setResults(data.slice(0, 6));
     } catch {
       setResults([]);

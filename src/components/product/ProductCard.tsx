@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ShoppingCart, Heart, Star, Zap } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import type { WCProduct } from "@/types";
-import { formatPrice, getDiscountPercent } from "@/lib/woocommerce";
+import { formatPrice, getDiscountPercent } from "@/lib/price";
 import toast from "react-hot-toast";
 
 interface Props {

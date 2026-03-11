@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = process.env.NEXT_PUBLIC_WP_URL;
+const BASE_URL = process.env.WP_URL || process.env.NEXT_PUBLIC_WP_URL;
 const WC_KEY = process.env.WC_KEY;
 const WC_SECRET = process.env.WC_SECRET;
 

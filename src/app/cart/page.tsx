@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, Minus, Plus, ShoppingCart, ArrowRight, Tag } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
-import { formatPrice } from "@/lib/woocommerce";
+import { formatPrice } from "@/lib/price";
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, getTotalPrice, getTotalItems, clearCart } = useCartStore();

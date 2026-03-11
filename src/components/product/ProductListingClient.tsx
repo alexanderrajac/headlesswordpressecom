@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { SlidersHorizontal, X, ChevronDown, Grid3X3, List, Filter } from "lucide-react";
-import { getProducts, getCategories, formatPrice } from "@/lib/woocommerce";
+import { formatPrice } from "@/lib/price";
 import type { WCProduct } from "@/types";
 import ProductCard from "./ProductCard";
 import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
@@ -38,18 +38,34 @@ export default function ProductListingClient({ searchParams }: Props) {
   const [priceRange, setPriceRange] = useState([filters.minPrice, filters.maxPrice]);
 
   useEffect(() => {
-    getCategories().then(setCategories).catch(() => {});
+    fetch("/api/categories")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then(setCategories)
+      .catch(() => {});
   }, []);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const { products: data, total: t, totalPages: tp } = await getProducts({
-        ...filters,
-        per_page: 20,
-        minPrice: priceRange[0] > 0 ? priceRange[0] : undefined,
-        maxPrice: priceRange[1] < 50000 ? priceRange[1] : undefined,
-      });
+      const qs = new URLSearchParams();
+      if (filters.category) qs.set("category", String(filters.category));
+      if (priceRange[0] > 0) qs.set("minPrice", String(priceRange[0]));
+      if (priceRange[1] < 50000) qs.set("maxPrice", String(priceRange[1]));
+      if (filters.minRating > 0) qs.set("minRating", String(filters.minRating));
+      if (filters.inStock) qs.set("inStock", "true");
+      qs.set("orderby", String(filters.orderby));
+      qs.set("order", String(filters.order));
+      qs.set("page", String(filters.page));
+      qs.set("per_page", "20");
+
+      const res = await fetch(`/api/products?${qs.toString()}`);
+      if (!res.ok) throw new Error("Failed");
+      const json = await res.json();
+      const { products: data, total: t, totalPages: tp } = json as {
+        products: WCProduct[];
+        total: number;
+        totalPages: number;
+      };
       setProducts(data);
       setTotal(t);
       setTotalPages(tp);

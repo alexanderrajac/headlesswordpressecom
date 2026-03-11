@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import { useCartStore } from "@/store/cartStore";
-import { createOrder, formatPrice } from "@/lib/woocommerce";
+import { formatPrice } from "@/lib/price";
 import type { CheckoutForm } from "@/types";
 import toast from "react-hot-toast";
 import { ChevronRight, CheckCircle, CreditCard, MapPin, User, Copy, Check, Loader2 } from "lucide-react";
@@ -73,7 +73,10 @@ export default function CheckoutPage() {
     }
     setLoading(true);
     try {
-      const order = await createOrder({
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
         payment_method: "upi",
         payment_method_title: "UPI Payment",
         status: "pending",
@@ -95,7 +98,10 @@ export default function CheckoutPage() {
           { key: "upi_transaction_id", value: form.transaction_id },
           { key: "order_notes", value: form.notes },
         ],
+        }),
       });
+      if (!res.ok) throw new Error("Order request failed");
+      const order = await res.json();
       clearCart();
       router.push(`/order-success?orderId=${order.id}&orderKey=${order.order_key}`);
     } catch (err: unknown) {

@@ -10,7 +10,7 @@ import {
   Shield, Truck, RefreshCw, Check, ZoomIn, Minus, Plus
 } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
-import { getProductReviews, formatPrice, getDiscountPercent } from "@/lib/woocommerce";
+import { formatPrice, getDiscountPercent } from "@/lib/price";
 import type { WCProduct, WCReview } from "@/types";
 import toast from "react-hot-toast";
 
@@ -32,7 +32,10 @@ export default function ProductDetailClient({ product }: Props) {
   const rating = parseFloat(product.average_rating);
 
   useEffect(() => {
-    getProductReviews(product.id).then(setReviews).catch(() => {});
+    fetch(`/api/reviews?productId=${product.id}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then(setReviews)
+      .catch(() => {});
   }, [product.id]);
 
   useEffect(() => {

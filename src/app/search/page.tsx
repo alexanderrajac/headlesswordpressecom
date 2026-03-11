@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
-import { getProducts } from "@/lib/woocommerce";
 import type { WCProduct } from "@/types";
 import ProductCard from "@/components/product/ProductCard";
 import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
@@ -20,8 +19,12 @@ function SearchPageContent() {
   useEffect(() => {
     if (!query) return;
     setLoading(true);
-    getProducts({ search: query, per_page: 24 })
-      .then(({ products: data, total: t }) => { setProducts(data); setTotal(t); })
+    fetch(`/api/products?search=${encodeURIComponent(query)}&per_page=24`)
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((json: { products: WCProduct[]; total: number }) => {
+        setProducts(json.products);
+        setTotal(json.total);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [query]);
